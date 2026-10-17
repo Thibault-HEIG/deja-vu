@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../src/Database.php';
+require_once __DIR__ . '/../src/models/User.php';
 
 /**
  * User repository : functions to manage users in the database.
