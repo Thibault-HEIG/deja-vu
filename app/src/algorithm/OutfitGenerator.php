@@ -6,7 +6,7 @@
 
 class OutfitGenerator {
     private float $colorHarmonyWeight;
-    private float $seasonalHarmonyWeight;
+    private float $seasonHarmonyWeight;
     private ?Item $seedItem;
     private int $seasonWish; // temperature wish in °C
     
