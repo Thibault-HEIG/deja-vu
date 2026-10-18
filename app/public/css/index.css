@@ -1,0 +1,9 @@
+
+/* Wardrobe visualization*/
+#wardrobe-items {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: minmax(50px, 250px);
+    align-items: center;
+    justify-items: center;
+}
