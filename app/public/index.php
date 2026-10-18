@@ -26,7 +26,7 @@ $category = $_GET['category'] ?? '';
     </header>
     <hero>
         <span class="date"><?= DAYS_FR[date('w')] . ' ' . date('j') . ' ' . MONTHS_FR[date('n')] ?></span>
-        <h1>Bonjour <?= $name ?></h1>
+        <h1>Bonjour <?= htmlspecialchars($name) ?></h1>
         <h2>On porte quoi aujourd'hui ?</h2>
         <p>Une tenue pensée à partir de ce que vous possédez déjà</p>
     </hero>
