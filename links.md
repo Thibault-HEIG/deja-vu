@@ -1,4 +1,4 @@
-# Maquette de l'application clothes-match
+# Maquette de l'application Déjà-vu
 
 La maquette de l'application a été réalisée sur Figma. Elle présente les différents écrans pensés.
 
