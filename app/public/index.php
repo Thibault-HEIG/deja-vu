@@ -17,7 +17,7 @@ $category = $_GET['category'] ?? '';
 <!DOCTYPE html>
 <html lang="fr">
 
-<?php render('head', ['title' => "On porte quoi aujourd'hui ?", 'description' => "Clothes Match - La bonne tenue au bon moment"]); ?>
+<?php render('head', ['title' => "On porte quoi aujourd'hui ?", 'description' => "Déjà-vu - La bonne tenue au bon moment"]); ?>
 
 <body>
     <header>

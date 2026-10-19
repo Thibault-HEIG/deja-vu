@@ -4,5 +4,5 @@
     <link rel="stylesheet" href="./css/styles.css">
     
     <title><?php htmlspecialchars($title ?? "Ma garde-robe")?></title>
-    <meta name="description" content=<?php htmlspecialchars($description ?? "Clothes Match - Le bon vêtement au bon moment") ?>>
+    <meta name="description" content=<?php htmlspecialchars($description ?? "Déjà-vu - Le bon vêtement au bon moment") ?>>
 </head>
