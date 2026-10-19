@@ -1,4 +1,3 @@
-
 /* Wardrobe visualization*/
 #wardrobe-items {
 	display: grid;
@@ -6,4 +5,15 @@
 	grid-template-rows: minmax(50px, 250px);
     align-items: center;
     justify-items: center;
+}
+
+.stars {
+  --size: 1.5rem;
+  --fill: calc(var(--rate) / 5 * 100%);
+  display: inline-block;
+  width: calc(var(--size) * 5);
+  height: var(--size);
+  background: linear-gradient(to right, rgb(238, 214, 80) var(--fill), #444 var(--fill));
+  -webkit-mask: url("../img/icons/star.svg") repeat-x left / var(--size) var(--size);
+          mask: url("../img/icons/star.svg") repeat-x left / var(--size) var(--size);
 }
