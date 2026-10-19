@@ -1,0 +1,54 @@
+/* ==========================================================================
+   theme.css — Déjà-vu
+   Palette sourced from logo_light.svg (#9fa8ff) and logo_dark.svg (#554bd1).
+   Complementary tones: warm linen neutrals + dusty rose accent.
+   Philosophy: natural, fashion-forward, pure — lots of air, no decoration noise.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Brand */
+  --clr-violet-light: #9fa8ff;   /* logo_light fill  */
+  --clr-violet-dark:  #554bd1;   /* logo_dark fill    */
+  --clr-violet-pale:  #eceeff;   /* tinted bg wash   */
+
+  /* Complementary — warm naturals */
+  --clr-linen:        #f5f2ee;   /* page background  */
+  --clr-linen-dark:   #ebe6df;   /* subtle surface   */
+  --clr-linen-border: #d8d0c5;   /* dividers         */
+
+  /* Complementary — dusty rose (split-complementary of violet) */
+  --clr-rose:         #e8c4b8;   /* soft accent      */
+  --clr-rose-dark:    #c9907d;   /* hover / emphasis */
+
+  /* Text */
+  --clr-ink:          #1a1714;   /* primary text     */
+  --clr-ink-muted:    #6b6460;   /* secondary text   */
+  --clr-ink-ghost:    #a8a09a;   /* placeholders     */
+
+  /* Functional */
+  --clr-white:        #ffffff;
+  --clr-star:         #d4a852;   /* star rating gold */
+
+  /* Typography */
+  --font-serif:   "Georgia", "Times New Roman", serif;
+  --font-sans:    system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Spacing */
+  --gap-xs:  0.5rem;
+  --gap-sm:  1rem;
+  --gap-md:  1.5rem;
+  --gap-lg:  2.5rem;
+  --gap-xl:  4rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+
+  /* Transitions */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: 220ms var(--ease);
+}

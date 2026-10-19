@@ -45,14 +45,14 @@ $category = $_GET['category'] ?? '';
             </div>
         </div>
         <div class="buttons">
-            <a href="generateOutfit.php"><button>Changer les paramètres</button></a>
-            <a href="index.php"><button>Créer une tenue</button></a>
+            <a href="index.php"><button id="reroll">Créer une tenue</button></a>
+            <a href="generateOutfit.php"><button id="change-param">Changer les paramètres</button></a>
         </div>
     </section>
     <section id="wardrobe">
         <div>
             <h2>Ma garde-robe</h2>
-            <span><?= $clothesCount ?>pièces prêtes à être portées</span>
+            <span><?= $clothesCount ?> pièces prêtes à être portées</span>
         </div>
         <div id="wardrobe-container">
             <nav>
