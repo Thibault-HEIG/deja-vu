@@ -17,12 +17,12 @@ $category = $_GET['category'] ?? '';
 <!DOCTYPE html>
 <html lang="fr">
 
-<?php render('head', ['title' => "On porte quoi aujourd'hui ?", 'description' => "Clothes Match - La bonne tenue au bon moment"]); ?>
+<?php render('head', ['title' => "On porte quoi aujourd'hui ?", 'description' => "Déjà-vu - La bonne tenue au bon moment"]); ?>
 
 <body>
     <header>
-        <img src="img/icons/logo.svg" id="logo">
-        <img src="img/icons/settings.svg" id="settings">
+        <img src="img/logo_light.svg" id="logo">
+        <img src="img/icons/profile.svg" id="settings">
     </header>
     <hero>
         <span class="date"><?= DAYS_FR[date('w')] . ' ' . date('j') . ' ' . MONTHS_FR[date('n')] ?></span>
@@ -45,14 +45,14 @@ $category = $_GET['category'] ?? '';
             </div>
         </div>
         <div class="buttons">
-            <a href="generateOutfit.php"><button>Changer les paramètres</button></a>
-            <a href="index.php"><button>Créer une tenue</button></a>
+            <a href="index.php"><button id="reroll">Créer une tenue</button></a>
+            <a href="generateOutfit.php"><button id="change-param">Changer les paramètres</button></a>
         </div>
     </section>
     <section id="wardrobe">
         <div>
             <h2>Ma garde-robe</h2>
-            <span><?= $clothesCount ?>pièces prêtes à être portées</span>
+            <span><?= $clothesCount ?> pièces prêtes à être portées</span>
         </div>
         <div id="wardrobe-container">
             <nav>
@@ -64,13 +64,19 @@ $category = $_GET['category'] ?? '';
                 <a href="?category=shoes#wardrobe" <?= $category === 'shoes' ? 'aria-current="true"' : '' ?>>Chaussures</a>
             </nav>
             <div id="wardrobe-items">
-                <a href="addItem.php" id="add-item" class="wardrobe-item">
-                    <img src="img/icons/add.svg" alt="Ajouter un vêtement">
-                </a>
+                <div class="wardrobe-item-container">
+                    <a href="addItem.php" id="add-item" class="wardrobe-item">
+                        <img src="img/icons/add.svg" alt="Ajouter un vêtement">
+                    </a>
+                </div>
                 <?php
                 $items = getItemsByCategoryAndUserId($category, $currentUserId);
                 foreach ($items as $item) {
-                    echo '<img src="' . htmlspecialchars($item->getImgUrl()) . '" class="wardrobe-item" data-category="' . htmlspecialchars($item->getCategory()) . '" data-rate="' . htmlspecialchars($item->getRate()) . '">';
+                    echo '<div class="wardrobe-item-container">';
+                    echo '<img src="' . htmlspecialchars($item->getImgUrl()) . '" class="wardrobe-item" data-category="' . htmlspecialchars($item->getCategory()) . '">';
+                    $rate = (int) $item->getRate();
+                    echo '<span class="stars" style="--rate:' . $rate . '" role="img"></span>';
+                    echo '</div>';
                 }
                 ?>
             </div>
