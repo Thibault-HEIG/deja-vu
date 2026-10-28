@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rate     = (int) ($_POST['rate'] ?? 0);
     $photo    = $_FILES['photo'] ?? null;
 
-    // Vérifications
+    // Vérifications des types, saisons et note
     if (!array_key_exists($category, $categories)) {
         $errors[] = 'Type invalide.';
     }
@@ -88,9 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $saturation = $hsv[1];
     $brightness = $hsv[2];
 
-    // Clamp : on limite la saturation et la luminosité (valeur max à définir)
-    $saturation = min($saturation, 1);
-    $brightness = min($brightness, 1);
 
     // Photo
     $extension = null;
