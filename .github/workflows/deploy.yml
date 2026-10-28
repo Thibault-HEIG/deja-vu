@@ -32,7 +32,7 @@ jobs:
 
           protocol: ftps
 
-          server-dir: sites/deja-vu.nouveau-souffle.ch
+          server-dir: sites/deja-vu.nouveau-souffle.ch/
 
           exclude: |
             **/.git*
