@@ -1,0 +1,47 @@
+name: Déploiement Infomaniak
+ 
+on:
+
+  push:
+
+    branches: [main]
+ 
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Récupération du code
+
+        uses: actions/checkout@v4
+ 
+      - name: Envoi FTP vers Infomaniak
+
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+
+        with:
+
+          server: ${{ secrets.FTP_HOST }}
+
+          username: ${{ secrets.FTP_USERNAME }}
+
+          password: ${{ secrets.FTP_PASSWORD }}
+
+          protocol: ftps
+
+          server-dir: sites/deja-vu.nouveau-souffle.ch/
+
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            .devcontainer/**
+            .vscode/**
+            modele-de-donnees/**
+            plan/**
+            links.md
+            compose.yaml
+            README.md
