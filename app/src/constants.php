@@ -24,3 +24,18 @@ const MONTHS_FR = [
     'novembre',
     'décembre',
 ];
+
+const CATEGORIES = [
+    'top'       => 'Haut',
+    'bottom'    => 'Bas',
+    'jacket'    => 'Veste',
+    'shoes'     => 'Chaussures',
+    'accessory' => 'Accessoire',
+];
+
+// Types d'images autorisés : type MIME => extension
+const ALLOWED_IMAGE_TYPES = [
+    'image/jpeg' => 'jpg',
+    'image/png'  => 'png',
+    'image/webp' => 'webp',
+];
