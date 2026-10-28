@@ -1,5 +1,5 @@
 # Architecture — Déjà-vu
-
+lien vers le site: https://deja-vu.nouveau-souffle.ch/
 ## Overview
 
 Server-side PHP app (no framework). The entry points in `public/` handle HTTP requests, delegate business logic to repositories in `src/`, and render reusable PHP components. The outfit-generation algorithm lives in its own sub-namespace under `src/algorithm/`.
