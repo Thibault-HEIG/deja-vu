@@ -1,8 +1,8 @@
     // Limites : on ne pourra choisir que des couleurs entre ces valeurs
 const LIMITES = {
     h: [0, 360],   // teinte en degrés
-    s: [20, 100],  // saturation en %
-    v: [30, 100]   // luminosité en %
+    s: [0, 70],  // saturation en %
+    v: [20, 90]   // luminosité en %
 };
 
 // Couleur de départ

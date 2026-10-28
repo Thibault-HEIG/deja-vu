@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/itemRepository.php';
+require_once __DIR__ . '/../src/seasonRepository.php';
 require_once __DIR__ . '/../src/constants.php';
 
 $currentUserId = 1; // ID de l'utilisateur actuel (à remplacer par la session plus tard)
@@ -10,6 +11,9 @@ $seasons = getAllSeasons();
 $error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // TODO valider les couleurs côté serveur
+    // Plus généralement, sortir les méthodes de validation dans src/itemRepository.php ou src/dbSecurity.php
     $hue        = (int) $_POST['hue'];
     $saturation = $_POST['saturation'] / 100;
     $brightness = $_POST['brightness'] / 100;
