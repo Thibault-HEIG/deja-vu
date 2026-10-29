@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../src/database.php';
+require_once __DIR__ . '/../src/Database.php';
 require_once __DIR__ . '/../src/models/Item.php';
 
 /**
@@ -70,25 +70,6 @@ function getItemsByCategoryAndUserId(string $category, int $userId): array {
         );
     }
     return $items;
-}
-
-/* Ajout du vêtement*/
-
-function getAllSeasons(): array {
-    $pdo = Database::getPdo();
-    $stmt = $pdo->query("SELECT * FROM seasons ORDER BY id");
-    $rows = $stmt->fetchAll();
-
-    $seasons = [];
-    foreach ($rows as $row) {
-        $seasons[] = new Season(
-            (int)$row['id'],
-            $row['name'],
-            (int)$row['avg_temperature'],
-            $row['icon_url']
-        );
-    }
-    return $seasons;
 }
 
 /*Ajoute un vêtement en base et retourne son id.*/
