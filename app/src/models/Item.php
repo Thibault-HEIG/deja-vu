@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/Season.php';
 /**
  * Item class representing an item.
  */
@@ -9,17 +10,17 @@ class Item {
     private float $hue;
     private float $saturation;
     private float $brightness;
-    private int $season_id;
+    private Season $season;
     private int $user_rate;
     private string $img_url;
 
-    public function __construct(int $id, string $category, float $hue, float $saturation, float $brightness, int $season_id, int $user_rate, string $img_url) {
+    public function __construct(int $id, string $category, float $hue, float $saturation, float $brightness, Season $season, int $user_rate, string $img_url) {
         $this->id = $id;
         $this->category = $category;
         $this->hue = $hue;
         $this->saturation = $saturation;
         $this->brightness = $brightness;
-        $this->season_id = $season_id;
+        $this->season = $season;
         $this->user_rate = $user_rate;
         $this->img_url = $img_url;
     }
@@ -34,5 +35,9 @@ class Item {
 
     public function getRate(): int {
         return $this->user_rate;
+    }
+
+    public function getSeason(): Season {
+        return $this->season;
     }
 }
