@@ -19,53 +19,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $saturation = $_POST['saturation'] / 100;
     $brightness = $_POST['brightness'] / 100;
 
-    $imgUrl = resolveImagePath($_POST['tmp_file'] ?? '', $_FILES['photo'] ?? [], $currentUserId, $error);
+    $imgUrl = saveItemImage($_POST['tmp_file'] ?? '', $_FILES['photo'] ?? [], $currentUserId);
 
-    addItem($imgUrl, $_POST['category'], (int) $_POST['season_id'], $hue, $saturation, $brightness, (int) $_POST['rate'], $currentUserId);
-    header('Location: index.php#wardrobe');
-    exit;
-}
-
-// ---------------------------------------------------------------------------
-// Resolves the final image path by choosing between the API-processed temp
-// file and the raw upload, validating each case, and moving the file into
-// the uploads folder. Returns the relative path on success, null on failure
-// (and sets $error by reference).
-// ---------------------------------------------------------------------------
-function resolveImagePath(string $tmpFile, array $upload, int $userId, ?string &$error): ?string {
-    $uploadDir = 'img/uploads/user_' . $userId;
-    $destPath  = fn(string $ext) => $uploadDir . '/' . uniqid('item_') . '.' . $ext;
-
-    // Branch A — API already processed the image: validate and move the temp PNG.
-    if (isValidTmpFile($tmpFile)) {
-        $imgUrl = $destPath('png');
-        rename(__DIR__ . '/' . $tmpFile, __DIR__ . '/' . $imgUrl);
-        return $imgUrl;
+    if ($imgUrl !== null) {
+        addItem($imgUrl, $_POST['category'], (int) $_POST['season_id'], $hue, $saturation, $brightness, (int) $_POST['rate'], $currentUserId);
+        header('Location: index.php#wardrobe');
+        exit;
     }
 
-    // Branch B — Raw upload: check the PHP upload succeeded, then verify MIME type.
+    $error = 'Format de photo non accepté ou erreur lors du téléchargement.';
+}
+
+/**
+ * Saves the item image into the user's upload directory.
+ * Uses the API-processed transparent PNG if available, otherwise falls back to the raw upload.
+ */
+function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
+    $uploadDir = 'img/uploads/user_' . $userId;
+    if (!is_dir(__DIR__ . '/' . $uploadDir)) {
+        mkdir(__DIR__ . '/' . $uploadDir, 0775, true);
+    }
+
+    // 1. Image processed by ClearBackdrop API
+    // basename() strips any path traversal without needing complex prefix checks
+    $tmpFilename = basename($tmpFile);
+    $tmpPath     = __DIR__ . '/img/tmp/' . $tmpFilename;
+
+    if ($tmpFilename !== '' && file_exists($tmpPath)) {
+        $destUrl = $uploadDir . '/' . uniqid('item_') . '.png';
+        rename($tmpPath, __DIR__ . '/' . $destUrl);
+        return $destUrl;
+    }
+
+    // 2. Fallback: raw image uploaded through form
     if (empty($upload['tmp_name']) || $upload['error'] !== UPLOAD_ERR_OK) {
-        $error = 'Erreur lors du téléchargement de la photo (fichier manquant ou trop volumineux).';
         return null;
     }
 
     $mime = mime_content_type($upload['tmp_name']);
     if (!array_key_exists($mime, ALLOWED_IMAGE_TYPES)) {
-        $error = 'Format de photo non accepté (JPG, PNG ou WEBP).';
         return null;
     }
 
-    $imgUrl = $destPath(ALLOWED_IMAGE_TYPES[$mime]);
-    move_uploaded_file($upload['tmp_name'], __DIR__ . '/' . $imgUrl);
-    return $imgUrl;
-}
-
-// Returns true only if $path is a safe, existing temp PNG produced by the API.
-function isValidTmpFile(string $path): bool {
-    return $path !== ''
-        && str_starts_with($path, 'img/tmp/')
-        && pathinfo($path, PATHINFO_EXTENSION) === 'png'
-        && file_exists(__DIR__ . '/' . $path);
+    $destUrl = $uploadDir . '/' . uniqid('item_') . '.' . ALLOWED_IMAGE_TYPES[$mime];
+    move_uploaded_file($upload['tmp_name'], __DIR__ . '/' . $destUrl);
+    return $destUrl;
 }
 
 ?>

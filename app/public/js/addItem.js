@@ -1,28 +1,27 @@
 /**
  * addItem.js — Handles eager background removal on file selection.
  *
- * When the user picks a photo, the file is immediately sent to removeBackground.php
- * (our server-side proxy to the ClearBackdrop API). While processing, a spinner
- * replaces the file input area. On success the transparent PNG preview is shown
- * and its server-side temp path is stored in a hidden input, which the main form
- * uses instead of the original file on submit.
- *
- * States: idle → uploading → done | error
+ * When the user selects a photo:
+ * 1. Shows an instant local preview.
+ * 2. Calls removeBackground.php to strip the background.
+ * 3. On success, displays the transparent PNG and stores its temporary path
+ *    in a hidden field for form submission.
+ * 4. On failure, notifies the user and falls back to uploading the raw photo.
  */
 
-const photoInput      = document.getElementById('photo');
-const previewImg      = document.getElementById('photo-preview');
-const photoStatus     = document.getElementById('photo-status');
-const tmpFileInput    = document.getElementById('tmp_file');
-const submitBtn       = document.querySelector('[type="submit"]');
+const photoInput   = document.getElementById('photo');
+const previewImg   = document.getElementById('photo-preview');
+const photoStatus  = document.getElementById('photo-status');
+const tmpFileInput = document.getElementById('tmp_file');
+const submitBtn    = document.querySelector('[type="submit"]');
 
 photoInput.addEventListener('change', async () => {
     const file = photoInput.files[0];
     if (!file) return;
 
-    // Show a local preview immediately for instant feedback
-    previewImg.src     = URL.createObjectURL(file);
-    previewImg.hidden  = false;
+    // Immediate local preview for responsive UX
+    previewImg.src    = URL.createObjectURL(file);
+    previewImg.hidden = false;
 
     setStatus('loading', 'Suppression du fond en cours…');
     submitBtn.disabled = true;
@@ -36,32 +35,23 @@ photoInput.addEventListener('change', async () => {
             body: formData,
         });
 
-        const rawText = await response.text();
-
-        let data;
-        try {
-            data = JSON.parse(rawText);
-        } catch {
-            console.error('Réponse non-JSON reçue du serveur:', rawText);
-            throw new Error(`Réponse invalide du serveur (voir console) : ${rawText.slice(0, 150)}`);
-        }
+        const data = await response.json();
 
         if (!response.ok || data.error) {
-            throw new Error(data.error ?? `Erreur HTTP ${response.status}`);
+            throw new Error(data.error || 'Erreur lors du traitement de l’image.');
         }
 
-        // Replace local preview with the processed transparent PNG from the server
+        // Show transparent PNG and set path for form submission
         previewImg.src     = data.tmpFile;
         tmpFileInput.value = data.tmpFile;
-
         setStatus('done', 'Fond supprimé ✓');
-        submitBtn.disabled = false;
 
     } catch (err) {
         console.error('Erreur traitement photo:', err);
         setStatus('error', `Échec : ${err.message}`);
-        // Still allow submission with the original file as fallback
+        // Fallback: clear temp path so form submits the raw file
         tmpFileInput.value = '';
+    } finally {
         submitBtn.disabled = false;
     }
 });
@@ -72,6 +62,7 @@ photoInput.addEventListener('change', async () => {
  * @param {string} message
  */
 function setStatus(state, message) {
-    photoStatus.textContent  = message;
+    photoStatus.textContent   = message;
     photoStatus.dataset.state = state;
 }
+
