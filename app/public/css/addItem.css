@@ -1,0 +1,74 @@
+/* ==========================================================================
+   addItem.css — Styles for the add-item form (photo upload + status feedback)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Photo upload area
+   -------------------------------------------------------------------------- */
+.photo-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+/* --------------------------------------------------------------------------
+   Status line — shown below the file input while the API processes the image
+   -------------------------------------------------------------------------- */
+#photo-status {
+    font-size: 0.875rem;
+    min-height: 1.25rem; /* prevents layout shift when text appears */
+
+    &[data-state="idle"] {
+        display: none;
+    }
+
+    &[data-state="loading"] {
+        color: var(--clr-ink-muted);
+
+        /* CSS-only spinner prepended to the message */
+        &::before {
+            content: "";
+            display: inline-block;
+            width: 0.75em;
+            height: 0.75em;
+            margin-right: 0.4em;
+            border: 2px solid var(--clr-linen-border);
+            border-top-color: var(--clr-violet-dark);
+            border-radius: 50%;
+            vertical-align: middle;
+            animation: spin 0.7s linear infinite;
+        }
+    }
+
+    &[data-state="done"] {
+        color: var(--clr-violet-dark);
+        font-weight: 600;
+    }
+
+    &[data-state="error"] {
+        color: var(--clr-rose-dark);
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   Preview image — transparent PNG returned by the API
+   -------------------------------------------------------------------------- */
+#photo-preview {
+    max-width: 180px;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    /* Checkerboard background to make transparency visible */
+    background-image:
+        linear-gradient(45deg, var(--clr-linen-dark) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--clr-linen-dark) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--clr-linen-dark) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--clr-linen-dark) 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    border: 1px solid var(--clr-linen-border);
+}
