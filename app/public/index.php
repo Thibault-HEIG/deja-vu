@@ -21,31 +21,34 @@ $name = $user->getName();
             <span>Garde-robe</span>
         </a>
     </header>
-    <hero>
-        <span class="date"><?= DAYS_FR[date('w')] . ' ' . date('j') . ' ' . MONTHS_FR[date('n')] ?></span>
-        <h1>Bonjour <?= htmlspecialchars($name) ?></h1>
-        <h2>On porte quoi aujourd'hui ?</h2>
-        <p>Une tenue pensée à partir de ce que vous possédez déjà</p>
-    </hero>
-    <section id="outfit">
-        <div id="outfit-container">
-            <div class="items-top">
-                <img src="" id="top" class="outfit-item">
-                <img src="" id="jacket" class="outfit-item">
+    <main>
+        <hero>
+            <span class="date"><?= DAYS_FR[date('w')] . ' ' . date('j') . ' ' . MONTHS_FR[date('n')] ?></span>
+            <h1>Bonjour <?= htmlspecialchars($name) ?></h1>
+            <h2>On porte quoi aujourd'hui ?</h2>
+            <p>Une tenue pensée à partir de ce que vous possédez déjà</p>
+        </hero>
+        <section id="outfit">
+            <div id="outfit-container">
+                <div class="items-top">
+                    <img src="" id="top" class="outfit-item">
+                    <img src="" id="jacket" class="outfit-item">
+                </div>
+                <div class="items-bottom">
+                    <img src="" id="bottom" class="outfit-item">
+                    <img src="" id="accessory" class="outfit-item">
+                </div>
+                <div class="items-shoes">
+                    <img src="" id="shoes" class="outfit-item">
+                </div>
             </div>
-            <div class="items-bottom">
-                <img src="" id="bottom" class="outfit-item">
-                <img src="" id="accessory" class="outfit-item">
+            <div class="buttons">
+                <a href="index.php"><button id="reroll">Créer une tenue</button></a>
+                <a href="generateOutfit.php"><button id="change-param">Changer les paramètres</button></a>
             </div>
-            <div class="items-shoes">
-                <img src="" id="shoes" class="outfit-item">
-            </div>
-        </div>
-        <div class="buttons">
-            <a href="index.php"><button id="reroll">Créer une tenue</button></a>
-            <a href="generateOutfit.php"><button id="change-param">Changer les paramètres</button></a>
-        </div>
-    </section>
+        </section>
+    </main>
+    <?php render('footer'); ?>
 </body>
 
 </html>

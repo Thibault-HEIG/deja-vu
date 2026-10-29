@@ -54,8 +54,7 @@ $category = $_GET['category'] ?? '';
             </div>
         </div>
     </section>
+    <?php render('footer'); ?>
 </body>
-
-<?php render('footer'); ?>
 
 </html>

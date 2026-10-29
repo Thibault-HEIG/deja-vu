@@ -52,3 +52,35 @@
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --transition: 220ms var(--ease);
 }
+
+/* --------------------------------------------------------------------------
+   Body — shared across all pages
+   -------------------------------------------------------------------------- */
+body {
+	font-family: var(--font-sans);
+	background-color: var(--clr-linen);
+	color: var(--clr-ink);
+	-webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------------------
+   Footer — shared across all pages
+   -------------------------------------------------------------------------- */
+footer {
+  text-align: center;
+  padding: var(--gap-lg) var(--gap-md);
+  margin-top: auto;
+  font-size: 0.6rem;
+
+  .us {
+    color: var(--clr-violet-dark);
+
+    .student-name {
+      font-weight: 600;
+    }
+  }
+
+  .them {
+    color: var(--clr-ink-muted);
+  }
+}
