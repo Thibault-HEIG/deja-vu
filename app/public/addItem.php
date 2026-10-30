@@ -75,26 +75,33 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
 
 <body>
     <link rel="stylesheet" href="css/colorPicker.css">
-    <h1>Ajouter un vêtement</h1>
+    <header id="addItem-header">
+        <a href="index.php">
+            <span>← Annuler</span>
+        </a>
+    </header>
+    <hero>
+        <h1>Ajouter un vêtement</h1>
 
-    <?php if ($error): ?>
-        <p><?= $error ?></p>
-    <?php endif; ?>
+        <?php if ($error): ?>
+            <p><?= $error ?></p>
+        <?php endif; ?>
+    </hero>
 
     <form method="post" enctype="multipart/form-data">
 
-        <p>
+        <div class="photo-upload">
             <label for="photo">Photo</label><br>
             <input type="file" id="photo" name="photo" accept="image/*" required>
             <!-- Filled by addItem.js once the API returns the processed PNG path -->
             <input type="hidden" id="tmp_file" name="tmp_file">
-        </p>
 
-        <!-- Preview + status shown after file selection -->
-        <p id="photo-status" data-state="idle"></p>
-        <img id="photo-preview" src="" alt="Aperçu" hidden>
+            <!-- Preview + status shown after file selection -->
+            <p id="photo-status" data-state="idle"></p>
+            <img id="photo-preview" src="" alt="Aperçu" hidden>
+        </div>
 
-        <p>
+        <div class="category-select">
             <label for="category">Type</label><br>
             <select id="category" name="category" required>
                 <option value="">-- Choisir --</option>
@@ -102,20 +109,19 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
                     <option value="<?= $value ?>"><?= $label ?></option>
                 <?php endforeach; ?>
             </select>
-        </p>
+        </div>
 
-        <p>
-            Saison<br>
-            <?php foreach ($seasons as $season): ?>
-                <label>
-                    <input type="radio" name="season_id" value="<?= $season->getId() ?>" required>
-                    <?= htmlspecialchars($season->getName()) ?>
-                </label>
+        <div class="season-select">
+            <label>Saison</label>
+            <?php foreach ($seasons as $season):
+                $default = $season->getName() == "Printemps" // Définir le printemps comme valeur par défaut ?>
+                <input type="radio" name="season_id" value="<?= $season->getId() ?>" required <?= $default ? 'checked' : '' ?>>
+                <span><?= htmlspecialchars($season->getName()) ?></span>
             <?php endforeach; ?>
-        </p>
+        </div>
 
-        <div>
-            Couleur<br>
+        <div class="color-select">
+            <label>Couleur</label>
             <div class="hsv-picker">
                 <div class="zone" id="zone">
                     <canvas id="carre" width="260" height="200"></canvas>
@@ -130,14 +136,14 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
             </div>
         </div>
 
-        <p>
-            Note<br>
-            <?php for ($i = 1; $i <= 5; $i++): ?>
-                <label>
-                    <input type="radio" name="rate" value="<?= $i ?>" required> <?= $i ?>★
-                </label>
+        <div class="rate-select">
+            <label>Note</label>
+            <p class="tip">Plus la note est haute, plus le vêtement te sera proposé souvent</p>
+            <?php for ($i = 1; $i <= 5; $i++):
+                $default = $i === 3; // Définir 3 comme valeur par défaut ?>
+                <input type="radio" name="rate" value="<?= $i ?>" required <?= $default ? 'checked' : '' ?>><span><?= $i ?>★</span>
             <?php endfor; ?>
-        </p>
+        </div>
 
         <button type="submit">Ajouter</button>
     </form>
