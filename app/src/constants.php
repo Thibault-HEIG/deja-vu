@@ -1,5 +1,11 @@
 <?php
 
+const LIMITS = [
+    'h' => [0, 360],   // teinte en degrés
+    's' => [0, 70],  // saturation en %
+    'v' => [20, 90]   // luminosité en %
+];
+
 const DAYS_FR = [
     'Dimanche',
     'Lundi',

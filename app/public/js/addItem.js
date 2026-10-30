@@ -30,7 +30,7 @@ photoInput.addEventListener('change', async () => {
     formData.append('photo', file);
 
     try {
-        const response = await fetch('removeBackground.php', {
+        const response = await fetch('../src/api/removeBackground.php', {
             method: 'POST',
             body: formData,
         });

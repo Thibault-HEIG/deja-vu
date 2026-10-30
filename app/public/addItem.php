@@ -3,31 +3,36 @@ require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/itemRepository.php';
 require_once __DIR__ . '/../src/seasonRepository.php';
 require_once __DIR__ . '/../src/constants.php';
+require_once __DIR__ . '/../src/databaseSecurity.php';
 
 $currentUserId = 1; // ID de l'utilisateur actuel (à remplacer par la session plus tard)
 
 $seasons = getAllSeasons();
-$error   = null;
+$errors   = [];
 
 // ---------------------------------------------------------------------------
 // POST handler — resolve image path, validate, persist
 // ---------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // TODO valider les couleurs côté serveur
+    $category = $_POST['category'] ?? '';
+
+    $season_id = (int) $_POST['season_id'];
+
     $hue        = (int) $_POST['hue'];
     $saturation = $_POST['saturation'] / 100;
     $brightness = $_POST['brightness'] / 100;
 
-    $imgUrl = saveItemImage($_POST['tmp_file'] ?? '', $_FILES['photo'] ?? [], $currentUserId);
+    $rate = (int) $_POST['rate'];
 
-    if ($imgUrl !== null) {
-        addItem($imgUrl, $_POST['category'], (int) $_POST['season_id'], $hue, $saturation, $brightness, (int) $_POST['rate'], $currentUserId);
+    $errors = getInputErrors($_FILES['photo'] ?? [], $_POST['tmp_file'] ?? '', $category, $season_id, $hue, $saturation, $brightness, $rate);
+
+    if (empty($errors)) {
+        $imgUrl = saveItemImage($_POST['tmp_file'] ?? '', $_FILES['photo'] ?? [], $currentUserId);
+        addItem($imgUrl, $category, $season_id, $hue, $saturation, $brightness, $rate, $currentUserId);
         header('Location: index.php#wardrobe');
         exit;
     }
-
-    $error = 'Format de photo non accepté ou erreur lors du téléchargement.';
 }
 
 /**
@@ -52,15 +57,7 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
     }
 
     // 2. Fallback: raw image uploaded through form
-    if (empty($upload['tmp_name']) || $upload['error'] !== UPLOAD_ERR_OK) {
-        return null;
-    }
-
     $mime = mime_content_type($upload['tmp_name']);
-    if (!array_key_exists($mime, ALLOWED_IMAGE_TYPES)) {
-        return null;
-    }
-
     $destUrl = $uploadDir . '/' . uniqid('item_') . '.' . ALLOWED_IMAGE_TYPES[$mime];
     move_uploaded_file($upload['tmp_name'], __DIR__ . '/' . $destUrl);
     return $destUrl;
@@ -83,15 +80,23 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
     <hero>
         <h1>Ajouter un vêtement</h1>
 
-        <?php if ($error): ?>
-            <p><?= $error ?></p>
-        <?php endif; ?>
+        <!-- Affichage dynamique des erreurs -->
+        <?php if ($_SERVER["REQUEST_METHOD"] === "POST") { ?>
+            <?php if (!empty($errors)) { ?>
+                <p>Le formulaire contient des erreurs :</p>
+                <ul>
+                    <?php foreach ($errors as $error) { ?>
+                        <li><?= $error ?></li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
+        <?php } ?>
     </hero>
 
     <form method="post" enctype="multipart/form-data">
 
         <div class="photo-upload">
-            <label for="photo">Photo</label><br>
+            <label for="photo">Photo</label>
             <input type="file" id="photo" name="photo" accept="image/*" required>
             <!-- Filled by addItem.js once the API returns the processed PNG path -->
             <input type="hidden" id="tmp_file" name="tmp_file">
@@ -102,7 +107,7 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
         </div>
 
         <div class="category-select">
-            <label for="category">Type</label><br>
+            <label for="category">Type</label>
             <select id="category" name="category" required>
                 <option value="">-- Choisir --</option>
                 <?php foreach (CATEGORIES as $value => $label): ?>
@@ -114,7 +119,8 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
         <div class="season-select">
             <label>Saison</label>
             <?php foreach ($seasons as $season):
-                $default = $season->getName() == "Printemps" // Définir le printemps comme valeur par défaut ?>
+                $default = $season->getName() == "Printemps" // Définir le printemps comme valeur par défaut 
+            ?>
                 <input type="radio" name="season_id" value="<?= $season->getId() ?>" required <?= $default ? 'checked' : '' ?>>
                 <span><?= htmlspecialchars($season->getName()) ?></span>
             <?php endforeach; ?>
@@ -140,7 +146,8 @@ function saveItemImage(string $tmpFile, array $upload, int $userId): ?string {
             <label>Note</label>
             <p class="tip">Plus la note est haute, plus le vêtement te sera proposé souvent</p>
             <?php for ($i = 1; $i <= 5; $i++):
-                $default = $i === 3; // Définir 3 comme valeur par défaut ?>
+                $default = $i === 3; // Définir 3 comme valeur par défaut 
+            ?>
                 <input type="radio" name="rate" value="<?= $i ?>" required <?= $default ? 'checked' : '' ?>><span><?= $i ?>★</span>
             <?php endfor; ?>
         </div>

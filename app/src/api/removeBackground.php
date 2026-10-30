@@ -11,7 +11,9 @@
 header('Content-Type: application/json');
 
 const CLEARBACKDROP_API = 'https://clearbackdrop.com/api/v1/remove-background';
-$tmpDir = __DIR__ . '/img/tmp';
+$CLEARBACKDROP_KEY = getenv('BG_REMOVER_API') ?: '';
+
+$tmpDir = __DIR__ . '/../../public/img/tmp';
 
 // 1. Basic validation: verify an image was uploaded without errors
 if (empty($_FILES['photo']['tmp_name']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
@@ -30,6 +32,7 @@ $ch = curl_init(CLEARBACKDROP_API);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER     => ['X-API-Key: ' . $CLEARBACKDROP_KEY],
     CURLOPT_POSTFIELDS     => [
         'image' => new CURLFile(
             $_FILES['photo']['tmp_name'],
