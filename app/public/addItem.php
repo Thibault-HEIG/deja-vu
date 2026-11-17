@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Le formulaire contient des erreurs :</p>
                 <ul>
                     <?php foreach ($errors as $error) { ?>
-                        <li><?= $error ?></li>
+                        <li><?= htmlspecialchars($error) ?></li>
                     <?php } ?>
                 </ul>
             <?php } ?>

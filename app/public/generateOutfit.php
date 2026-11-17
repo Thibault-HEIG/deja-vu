@@ -38,6 +38,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </header>
     <section id="hero">
         <h1>Créer un outfit</h1>
+        <!-- Affichage dynamique des erreurs -->
+        <?php if ($_SERVER["REQUEST_METHOD"] === "POST") { ?>
+            <?php if (!empty($errors)) { ?>
+                <p>Le formulaire contient des erreurs :</p>
+                <ul>
+                    <?php foreach ($errors as $error) { ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
+        <?php } ?>
         <form action="./generateOutfit.php" method="POST">
             <div class="seed-item">
                 <span>Optionnel</span>
