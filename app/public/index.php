@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/UserRepository.php';
 require_once __DIR__ . '/../src/constants.php';
+require_once __DIR__ . '/../src/ErrorHandler.php';
+ErrorHandler::register(); // Hide raw errors in production
 
 $userRepo = new UserRepository();
 

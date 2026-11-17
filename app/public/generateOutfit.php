@@ -3,13 +3,16 @@ require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/ItemRepository.php';
 require_once __DIR__ . '/../src/repositories/SeasonRepository.php';
 require_once __DIR__ . '/../src/models/User.php';
+require_once __DIR__ . '/../src/ErrorHandler.php';
+ErrorHandler::register(); // Hide raw errors in production
 
-$seasonRepo = new SeasonRepository();
+    $seasonRepo = new SeasonRepository();
 $itemRepo = new ItemRepository();
 
 $seasons = $seasonRepo->getAll();
 
 $user = new User("Utilisateur Test", 0.5, 0.5, 1);
+$errors   = [];
 
 $allItems = $itemRepo->getAllByUserIdAndCategory($user->getId());
 
@@ -38,17 +41,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </header>
     <section id="hero">
         <h1>Créer un outfit</h1>
+
         <!-- Affichage dynamique des erreurs -->
         <?php if ($_SERVER["REQUEST_METHOD"] === "POST") { ?>
-            <?php if (!empty($errors)) { ?>
-                <p>Le formulaire contient des erreurs :</p>
-                <ul>
-                    <?php foreach ($errors as $error) { ?>
-                        <li><?= htmlspecialchars($error) ?></li>
-                    <?php } ?>
-                </ul>
+            <?php ErrorHandler::displayErrors($errors)?>
             <?php } ?>
-        <?php } ?>
+
         <form action="./generateOutfit.php" method="POST">
             <div class="seed-item">
                 <span>Optionnel</span>

@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/ItemRepository.php';
 require_once __DIR__ . '/../src/models/Item.php';
+require_once __DIR__ . '/../src/ErrorHandler.php';
+ErrorHandler::register(); // Hide raw errors in production
 
 $itemRepo = new ItemRepository();
 
