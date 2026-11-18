@@ -57,6 +57,5 @@ app/
     │
     └── algorithm/
         ├── OutfitGenerator.php     # Core engine: scores and selects the best item combination given weights and a seed item
-        ├── colorScorer.php         # Pure functions for computing colour-harmony scores between two items
         └── model.json              # Color scoring linear regression model
 ```

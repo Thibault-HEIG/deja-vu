@@ -42,7 +42,7 @@ class ItemRepository extends Repository implements IDelete {
         return (int)$row['count'];
     }
 
-    public function getAllByCatgegoryAndUserId(string $category, int $userId): array {
+    public function getAllByUserIdAndCategory(int $userId, string $category = ''): array {
 
         if ($category !== '') {
             $stmt = $this->pdo->prepare("SELECT clothes.*, seasons.name AS season_name, seasons.avg_temperature, seasons.icon_url

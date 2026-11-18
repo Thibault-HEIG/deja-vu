@@ -5,6 +5,8 @@ require_once __DIR__ . '/../src/repositories/SeasonRepository.php';
 require_once __DIR__ . '/../src/repositories/UserRepository.php';
 require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/databaseSecurity.php';
+require_once __DIR__ . '/../src/ErrorHandler.php';
+ErrorHandler::register(); // Hide raw errors in production
 
 $currentUserId = 1; // ID de l'utilisateur actuel (à remplacer par la session plus tard)
 
@@ -68,14 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Affichage dynamique des erreurs -->
         <?php if ($_SERVER["REQUEST_METHOD"] === "POST") { ?>
-            <?php if (!empty($errors)) { ?>
-                <p>Le formulaire contient des erreurs :</p>
-                <ul>
-                    <?php foreach ($errors as $error) { ?>
-                        <li><?= $error ?></li>
-                    <?php } ?>
-                </ul>
-            <?php } ?>
+            <?php ErrorHandler::displayErrors($errors) ?>
         <?php } ?>
     </section>
 

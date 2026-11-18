@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/Season.php';
+require_once __DIR__ . '/../constants.php';
 /**
  * Item class representing an item.
  */
@@ -39,6 +40,10 @@ class Item {
 
     public function getColor(): Color {
         return $this->color;
+    }
+
+    public function getId(): ?int {
+        return $this->id;
     }
 
 }

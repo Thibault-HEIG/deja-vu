@@ -1,0 +1,199 @@
+/* ==========================================================================
+   generateOutfit.css — Page styles for generateOutfit.php
+   Uses design tokens from theme.css. Do not redeclare tokens here.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Header (same style as addItem)
+   -------------------------------------------------------------------------- */
+header#generateOutfit-header {
+	border-bottom: none;
+	padding-top: var(--gap-md);
+
+	a {
+		flex-direction: row;
+		font-size: 0.85rem;
+		color: var(--clr-violet-dark);
+		text-decoration: none;
+		opacity: 1;
+
+		&:hover {
+			color: var(--clr-ink);
+		}
+	}
+}
+
+/* --------------------------------------------------------------------------
+   Seed item — button that opens the picker popup
+   -------------------------------------------------------------------------- */
+.seed-item {
+	padding-bottom: var(--gap-md);
+	border-bottom: 1px solid var(--clr-linen-border);
+
+	& > span {
+		display: block;
+		font-size: 0.72rem;
+		color: var(--clr-ink-ghost);
+		margin-bottom: var(--gap-xs);
+	}
+
+	/* The clickable area that opens the popup */
+	.seed-trigger {
+		display: flex;
+		align-items: center;
+		gap: var(--gap-sm);
+		width: 100%;
+		padding: var(--gap-sm);
+		background-color: var(--clr-white);
+		border: 1px dashed var(--clr-linen-border);
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		transition: border-color var(--transition);
+
+		&:hover {
+			border-color: var(--clr-violet-light);
+		}
+
+		/* Thumbnail of the selected item, hidden by default */
+		img {
+			width: 3rem;
+			height: 3rem;
+			object-fit: contain;
+			border-radius: var(--radius-sm);
+			background-color: var(--clr-linen);
+			display: none;
+		}
+
+		span {
+			font-size: 0.85rem;
+			color: var(--clr-ink-muted);
+		}
+	}
+
+	/* When an item is selected, show thumbnail + change label */
+	.seed-trigger.has-selection {
+		border-style: solid;
+		border-color: var(--clr-violet-light);
+
+		img {
+			display: block;
+		}
+	}
+}
+
+/* --------------------------------------------------------------------------
+   Popup overlay — dark backdrop + centered white panel
+   -------------------------------------------------------------------------- */
+.popup-overlay {
+	/* Covers the whole viewport */
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	background-color: rgba(0, 0, 0, 0.4);
+
+	/* Centers the panel */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	/* Hidden by default */
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity var(--transition);
+
+	&.open {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+.popup-panel {
+	background-color: var(--clr-linen);
+	border-radius: var(--radius-md);
+	width: 92%;
+	max-width: 28rem;
+	max-height: 80vh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	/* Header row with title + close button */
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: var(--gap-sm) var(--gap-md);
+		border-bottom: 1px solid var(--clr-linen-border);
+		position: static;
+
+		h3 {
+			font-family: var(--font-serif);
+			font-size: 1.15rem;
+			font-weight: 400;
+		}
+
+		button {
+			background: none;
+			border: none;
+			font-size: 1.3rem;
+			cursor: pointer;
+			color: var(--clr-ink-muted);
+			padding: 0.25rem;
+			line-height: 1;
+
+			&:hover {
+				color: var(--clr-ink);
+			}
+		}
+	}
+
+	/* Scrollable grid of items */
+	.popup-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--gap-xs);
+		padding: var(--gap-sm);
+		overflow-y: auto;
+
+		img {
+			width: 100%;
+			aspect-ratio: 1;
+			object-fit: contain;
+			background-color: var(--clr-white);
+			border: 2px solid transparent;
+			border-radius: var(--radius-sm);
+			padding: var(--gap-xs);
+			cursor: pointer;
+			transition:
+				border-color var(--transition),
+				box-shadow var(--transition);
+
+			&:hover {
+				border-color: var(--clr-violet-light);
+				box-shadow: 0 4px 12px rgba(85, 75, 209, 0.12);
+			}
+		}
+	}
+
+	/* Deselect button at the bottom */
+	.popup-footer {
+		padding: var(--gap-xs) var(--gap-sm);
+		border-top: 1px solid var(--clr-linen-border);
+		text-align: center;
+
+		button {
+			font-family: var(--font-sans);
+			font-size: 0.78rem;
+			font-weight: 500;
+			color: var(--clr-ink-muted);
+			background: none;
+			border: none;
+			cursor: pointer;
+			padding: 0.4rem 0.8rem;
+
+			&:hover {
+				color: var(--clr-violet-dark);
+			}
+		}
+	}
+}

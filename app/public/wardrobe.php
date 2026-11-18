@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/ItemRepository.php';
 require_once __DIR__ . '/../src/models/Item.php';
+require_once __DIR__ . '/../src/ErrorHandler.php';
+ErrorHandler::register(); // Hide raw errors in production
 
 $itemRepo = new ItemRepository();
 
@@ -44,7 +46,7 @@ $category = $_GET['category'] ?? '';
                     </a>
                 </div>
                 <?php
-                $items = $itemRepo->getAllByCatgegoryAndUserId($category, $currentUserId);
+                $items = $itemRepo->getAllByUserIdAndCategory($currentUserId, $category);
                 foreach ($items as $item) {
                     echo '<div class="wardrobe-item-container">';
                     echo '<img src="' . htmlspecialchars($item->getImgUrl()) . '" class="wardrobe-item" data-category="' . htmlspecialchars($item->getCategory()) . '">';

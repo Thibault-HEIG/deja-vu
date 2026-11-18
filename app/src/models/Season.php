@@ -8,6 +8,12 @@ class Season {
     private ?string $iconUrl;
 
     public function __construct(int $id, ?string $name = null, ?int $avgTemperature = null, ?string $iconUrl = null) {
+        if ($id < 1 || $id > 4) {
+            throw new InvalidArgumentException("Season ID should be between 1 and 4.");
+        }
+        if ($avgTemperature !== null && ($avgTemperature < -20 || $avgTemperature > 50)) {
+            throw new InvalidArgumentException("Average temperature mustn't exeed -20 and 50.");
+        }
         $this->id = $id;
         $this->name = $name;
         $this->avgTemperature = $avgTemperature;
