@@ -26,6 +26,7 @@ class UserRepository extends Repository implements IDelete {
     }
 
     public function insert(User $user): int {
+        // Try to generate the token from the email for reproducability
         $secretToken = bin2hex(random_bytes(16)); // Generate a random secret token
         
         return 0; // Not implemented yet

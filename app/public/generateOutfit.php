@@ -4,7 +4,6 @@ require_once __DIR__ . '/../src/repositories/ItemRepository.php';
 require_once __DIR__ . '/../src/repositories/SeasonRepository.php';
 require_once __DIR__ . '/../src/models/User.php';
 require_once __DIR__ . '/../src/ErrorHandler.php';
-ErrorHandler::register(); // Hide raw errors in production
 
     $seasonRepo = new SeasonRepository();
 $itemRepo = new ItemRepository();
