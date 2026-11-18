@@ -4,6 +4,7 @@ require_once __DIR__ . '/../models/Item.php';
 require_once __DIR__ . '/../models/Outfit.php';
 require_once __DIR__ . '/../repositories/ItemRepository.php';
 require_once __DIR__ . '/../repositories/SeasonRepository.php';
+require_once __DIR__ . '/ColorModel.php';
 
 /**
  * OutfitGenerator — picks one item per category to build a coherent outfit.
@@ -26,6 +27,7 @@ class OutfitGenerator {
     private ?int $seasonWish;
     private float $modelTemperature;
     private int $userId;
+    private ColorModel $colorModel;
 
     private int $maxTemperatureDifference; // constant (information for the alogrithm)
 
@@ -60,6 +62,7 @@ class OutfitGenerator {
         $this->seasonWish = $seasonWish;
         $this->modelTemperature = $modelTemperature;
         $this->maxTemperatureDifference = new SeasonRepository()->getMaxTemperatureDifference();
+        $this->colorModel = new ColorModel(__DIR__ . '/model.json');
     }
 
     public function generateOutfit(): Outfit {
@@ -117,8 +120,8 @@ class OutfitGenerator {
             if (in_array($category, ['accessory', 'jacket'])) {
                 $candidates[] = [
                     'item'   => null,
-                    'color'  => 0.4,
-                    'season' => 0.4,
+                    'color'  => 0.5,
+                    'season' => 0.5,
                     'rate'   => 3 / 5,
                 ];
             }
@@ -253,7 +256,6 @@ class OutfitGenerator {
      * Higher = better match.
      */
     private function computeColorScore(Color $color1, Color $color2): float {
-        // TODO: implement
-        return 0.0;
+        return $this->colorModel->predict($color1, $color2);
     }
 }

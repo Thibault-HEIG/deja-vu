@@ -93,12 +93,12 @@ class ItemRepository extends Repository implements IDelete {
         return (int) $this->pdo->lastInsertId();
     }
 
-    /*Modifie un vêtement en base avec de nouvelles données.*/
+    /* Modifie un vêtement en base avec de nouvelles données.*/
     public function update(Item $item): bool {
         return false; // Not implemented yet
     }
 
-    /*Supprime un vêtement en base avec de nouvelles données.*/
+    /* Supprime un vêtement en base avec de nouvelles données.*/
     #[Override]
     public function deleteById(int $itemId): bool {
         return false; // Not implemented yet

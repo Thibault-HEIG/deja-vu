@@ -17,4 +17,24 @@ class Outfit {
         $this->accessory = $accessory;
         $this->jacket = $jacket;
     }
+
+    public function getTop(): Item {
+        return $this->top;
+    }
+
+    public function getBottom(): Item {
+        return $this->bottom;
+    }
+
+    public function getShoes(): Item {
+        return $this->shoes;
+    }
+
+    public function getAccessory(): ?Item {
+        return $this->accessory;
+    }
+
+    public function getJacket(): ?Item {
+        return $this->jacket;
+    }
 }

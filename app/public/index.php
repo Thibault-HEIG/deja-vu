@@ -1,13 +1,22 @@
 <?php
 require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/UserRepository.php';
+require_once __DIR__ . '/../src/repositories/OutfitRepository.php';
 require_once __DIR__ . '/../src/constants.php';
 
 $userRepo = new UserRepository();
+$outfitRepo = new OutfitRepository();
 
 $currentUserId = 1; // ID de l'utilisateur actuel
 $user = $userRepo->getById($currentUserId);
 $name = $user->getName();
+
+$latestOutfit = $outfitRepo->getLatestOutfitByUserId($user->getId());
+$top = $latestOutfit->getTop();
+$bottom = $latestOutfit->getBottom();
+$shoes = $latestOutfit->getShoes();
+$jacket = $latestOutfit->getJacket();
+$accessory = $latestOutfit->getAccessory();
 ?>
 
 <!DOCTYPE html>
@@ -33,15 +42,15 @@ $name = $user->getName();
         <section id="outfit">
             <div id="outfit-container">
                 <div class="items-top">
-                    <img src="" id="top" class="outfit-item">
-                    <img src="" id="jacket" class="outfit-item">
+                    <img src="<?= htmlspecialchars($top->getImgUrl()) ?>" id="top" class="outfit-item">
+                    <img src="<?= htmlspecialchars($jacket->getImgUrl()) ?>" id="jacket" class="outfit-item">
                 </div>
                 <div class="items-bottom">
-                    <img src="" id="bottom" class="outfit-item">
-                    <img src="" id="accessory" class="outfit-item">
+                    <img src="<?= htmlspecialchars($bottom->getImgUrl()) ?>" id="bottom" class="outfit-item">
+                    <img src="<?= htmlspecialchars($accessory->getImgUrl()) ?>" id="accessory" class="outfit-item">
                 </div>
                 <div class="items-shoes">
-                    <img src="" id="shoes" class="outfit-item">
+                    <img src="<?= htmlspecialchars($shoes->getImgUrl()) ?>" id="shoes" class="outfit-item">
                 </div>
             </div>
             <div class="buttons">

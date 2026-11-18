@@ -2,11 +2,15 @@
 require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/ItemRepository.php';
 require_once __DIR__ . '/../src/repositories/SeasonRepository.php';
+require_once __DIR__ . '/../src/repositories/OutfitRepository.php';
 require_once __DIR__ . '/../src/models/User.php';
+require_once __DIR__ . '/../src/databaseSecurity.php';
+require_once __DIR__ . '/../src/algorithm/OutfitGenerator.php';
 require_once __DIR__ . '/../src/ErrorHandler.php';
 
-    $seasonRepo = new SeasonRepository();
+$seasonRepo = new SeasonRepository();
 $itemRepo = new ItemRepository();
+$outfitRepo = new OutfitRepository();
 
 $seasons = $seasonRepo->getAll();
 
@@ -16,14 +20,46 @@ $errors   = [];
 $allItems = $itemRepo->getAllByUserIdAndCategory($user->getId());
 
 // Default values
-$seed_item_id = isset($_POST['seed_item_id']) ? (int) $_POST['seed_item_id'] : null;
+$seedItemId = isset($_POST['seed_item_id']) ? (int) $_POST['seed_item_id'] : null;
 $colorHarmony = isset($_POST['harmony']) ? (float) 1 - $_POST['harmony'] : $user->getLastSeasonHarmonyImportance();
 $seasonHarmony = isset($_POST['harmony']) ? (float) $_POST['harmony'] : $user->getLastSeasonHarmonyImportance();
-$season_id = isset($_POST['season_id']) ? (int) $_POST['season_id'] : null;
+$seasonId = isset($_POST['season_id']) ? (int) $_POST['season_id'] : null;
+
+function getErrors(int $seedItemId, int $seasonId, float $colorHarmony, float $seasonHarmony): array {
+    $itemRepo = new ItemRepository();
+    $seasonRepo = new SeasonRepository();
+    $errors = [];
+    if (isset($seedItemId) && $itemRepo->getById($seedItemId) === null) {
+        $errors[] = "Le vêtement n'a pas été trouvé dans votre garde-robe.";
+    }
+    if (isset($seasonId) && $seasonRepo->getById($seasonId) === null) {
+        $errors[] = "La saison n'est pas valide.";
+    }
+    if ($colorHarmony > 1 || $colorHarmony < 0) {
+        $errors[] = "L'harmonie de couleur n'est pas valide.";
+    }
+    if ($seasonHarmony > 1 || $seasonHarmony < 0) {
+        $errors[] = "L'harmonie de saison n'est pas valide.";
+    }
+    return $errors;
+
+}
 
 // Gestion de la soumission du formulaire
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // $seed_item_id is ready to use here (null if none selected)
+
+    $seedItem = isset($seedItemId) ? $itemRepo->getById($seedItemId) : null;
+    $seasonWish = isset($seasonId) ? $seasonRepo->getById($seasonId)->getAvgTemperature() : null;
+
+    $errors = getErrors($seedItemId, $seasonId, $colorHarmony, $seasonHarmony);
+
+    if (empty($errors)) {
+        $outfitGenerator = new OutfitGenerator($user->getId(), $colorHarmony, $seasonHarmony, $seedItem, $seasonWish);
+        $outfit = $outfitGenerator->generateOutfit();
+        $outfitRepo->insert($outfit);
+        header('Location: index.php');
+        exit;
+    }
 }
 ?>
 
@@ -67,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="season-select">
                 <legend>Saison de préférence</legend>
                 <?php foreach ($seasons as $season): ?>
-                    <input type="radio" name="season_id" value="<?= $season->getId() ?>" required <?= $season_id === $season->getId() ? "checked" : "" ?>>
+                    <input type="radio" name="season_id" value="<?= $season->getId() ?>" required <?= $seasonId === $season->getId() ? "checked" : "" ?>>
                     <label for="season_id"><?= htmlspecialchars($season->getName()) ?></label>
                 <?php endforeach; ?>
             </div>
