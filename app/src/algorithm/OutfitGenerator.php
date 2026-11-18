@@ -3,6 +3,7 @@ require_once __DIR__ . '/../constants.php';
 require_once __DIR__ . '/../models/Item.php';
 require_once __DIR__ . '/../models/Outfit.php';
 require_once __DIR__ . '/../repositories/ItemRepository.php';
+require_once __DIR__ . '/../repositories/SeasonRepository.php';
 
 /**
  * OutfitGenerator — picks one item per category to build a coherent outfit.
@@ -25,6 +26,8 @@ class OutfitGenerator {
     private ?int $seasonWish;
     private float $modelTemperature;
     private int $userId;
+
+    private int $maxTemperatureDifference; // constant (information for the alogrithm)
 
     public function __construct(
         int $userId,
@@ -56,6 +59,7 @@ class OutfitGenerator {
         $this->seedItem = $seedItem;
         $this->seasonWish = $seasonWish;
         $this->modelTemperature = $modelTemperature;
+        $this->maxTemperatureDifference = new SeasonRepository()->getMaxTemperatureDifference();
     }
 
     public function generateOutfit(): Outfit {
@@ -95,10 +99,12 @@ class OutfitGenerator {
             $candidates = [];
             foreach ($categoryItems as $item) {
                 $colorScore  = $this->computeColorScoreVsContext($item, $context);
-                $seasonScore = ($this->seasonWish !== null)
-                    ? $this->computeSeasonScoreAbsolute($item->getSeason()->getAvgTemperature())
-                    : $this->computeSeasonScoreVsContext($item, $context);
-
+                if (isset($this->seasonWish)) {
+                    $seasonScore = $this->computeSeasonScoreAbsolute($item->getSeason()->getAvgTemperature());
+                } else {
+                    $seasonScore = $this->computeSeasonScoreVsContext($item, $context);
+                }
+                
                 $candidates[] = [
                     'item'   => $item,
                     'color'  => $colorScore,
@@ -229,8 +235,8 @@ class OutfitGenerator {
      * Higher = better match.
      */
     private function computeSeasonScoreAbsolute(int $seasonTemp): float {
-        // TODO: implement
-        return 0.0;
+        $tempDifference = abs($seasonTemp - $this->seasonWish);
+        return $tempDifference / $this->maxTemperatureDifference;
     }
 
     /**
@@ -238,8 +244,8 @@ class OutfitGenerator {
      * Higher = better match.
      */
     private function computeSeasonScoreRelative(int $seasonTemp1, int $seasonTemp2): float {
-        // TODO: implement
-        return 0.0;
+        $tempDifference = abs($seasonTemp1 - $seasonTemp2);
+        return $tempDifference / $this->maxTemperatureDifference;
     }
 
     /**
