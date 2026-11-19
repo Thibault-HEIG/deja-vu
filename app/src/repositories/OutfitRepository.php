@@ -13,15 +13,18 @@ class OutfitRepository extends Repository {
 
     public function insert(Outfit $outfit): int {
         $stmt = $this->pdo->prepare(
-            'INSERT INTO results (id_top, id_bottom, id_shoes, id_jacket, id_accessory) ' .
-            'VALUES (:id_top, :id_bottom, :id_shoes, :id_jacket, :id_accessory)'
+            'INSERT INTO results (id_top, id_bottom, id_shoes, id_jacket, id_accessory, season_harmony, seed_item_id, season_wish_id) ' .
+            'VALUES (:id_top, :id_bottom, :id_shoes, :id_jacket, :id_accessory, :season_harmony, :seed_item_id, :season_wish_id)'
         );
         $stmt->execute([
-            ':id_top'       => $outfit->getTop()->getId(),
-            ':id_bottom'    => $outfit->getBottom()->getId(),
-            ':id_shoes'     => $outfit->getShoes()->getId(),
-            ':id_jacket'    => $outfit->getJacket()?->getId(),
-            ':id_accessory' => $outfit->getAccessory()?->getId(),
+            ':id_top'         => $outfit->getTop()->getId(),
+            ':id_bottom'      => $outfit->getBottom()->getId(),
+            ':id_shoes'       => $outfit->getShoes()->getId(),
+            ':id_jacket'      => $outfit->getJacket()?->getId(),
+            ':id_accessory'   => $outfit->getAccessory()?->getId(),
+            ':season_harmony' => $outfit->getSeasonHarmony(),
+            ':seed_item_id'   => $outfit->getSeedItemId(),
+            ':season_wish_id' => $outfit->getSeasonWishId(),
         ]);
         return (int) $this->pdo->lastInsertId();
     }
@@ -73,6 +76,17 @@ class OutfitRepository extends Repository {
         $jacket = $row['id_jacket'] !== null ? $this->itemRepo->getById((int)$row['id_jacket']) : null;
         $accessory = $row['id_accessory'] !== null ? $this->itemRepo->getById((int)$row['id_accessory']) : null;
 
-        return new Outfit($top, $bottom, $shoes, $accessory, $jacket);
+        return new Outfit(
+            $top,
+            $bottom,
+            $shoes,
+            $accessory,
+            $jacket,
+            isset($row['season_harmony']) ? (float)$row['season_harmony'] : null,
+            isset($row['seed_item_id']) ? (int)$row['seed_item_id'] : null,
+            isset($row['season_wish_id']) ? (int)$row['season_wish_id'] : null,
+            isset($row['id']) ? (int)$row['id'] : null,
+            $row['timestamp'] ?? null
+        );
     }
 }

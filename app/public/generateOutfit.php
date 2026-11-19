@@ -3,6 +3,7 @@ require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/ItemRepository.php';
 require_once __DIR__ . '/../src/repositories/SeasonRepository.php';
 require_once __DIR__ . '/../src/repositories/OutfitRepository.php';
+require_once __DIR__ . '/../src/repositories/UserRepository.php';
 require_once __DIR__ . '/../src/models/User.php';
 require_once __DIR__ . '/../src/databaseSecurity.php';
 require_once __DIR__ . '/../src/algorithm/OutfitGenerator.php';
@@ -11,21 +12,25 @@ require_once __DIR__ . '/../src/ErrorHandler.php';
 $seasonRepo = new SeasonRepository();
 $itemRepo = new ItemRepository();
 $outfitRepo = new OutfitRepository();
+$userRepo = new UserRepository();
 
 $seasons = $seasonRepo->getAll();
 
-$user = new User("Utilisateur Test", 0.5, 0.5, 1);
+$currentUserId = 4; // ID de l'utilisateur actuel
+$user = $userRepo->getById($currentUserId);
+
+$latestOutfit = $outfitRepo->getLatestOutfitByUserId($user->getId());
 $errors   = [];
 
 $allItems = $itemRepo->getAllByUserIdAndCategory($user->getId());
 
 // Default values
-$seedItemId = isset($_POST['seed_item_id']) ? (int) $_POST['seed_item_id'] : null;
-$colorHarmony = isset($_POST['harmony']) ? (float) 1 - $_POST['harmony'] : $user->getLastSeasonHarmonyImportance();
-$seasonHarmony = isset($_POST['harmony']) ? (float) $_POST['harmony'] : $user->getLastSeasonHarmonyImportance();
-$seasonId = isset($_POST['season_id']) ? (int) $_POST['season_id'] : null;
+$seedItemId = isset($_POST['seed_item_id']) && $_POST['seed_item_id'] !== '' ? (int) $_POST['seed_item_id'] : null;
+$seasonHarmony = isset($_POST['harmony']) ? (float) $_POST['harmony'] : ($latestOutfit?->getSeasonHarmony() ?? 0.5);
+$colorHarmony = (float) 1.0 - $seasonHarmony;
+$seasonId = isset($_POST['season_id']) ? (int) $_POST['season_id'] : ($latestOutfit?->getSeasonWishId() ?? null);
 
-function getErrors(int $seedItemId, int $seasonId, float $colorHarmony, float $seasonHarmony): array {
+function getErrors(?int $seedItemId, ?int $seasonId, float $colorHarmony, float $seasonHarmony): array {
     $itemRepo = new ItemRepository();
     $seasonRepo = new SeasonRepository();
     $errors = [];
@@ -42,7 +47,6 @@ function getErrors(int $seedItemId, int $seasonId, float $colorHarmony, float $s
         $errors[] = "L'harmonie de saison n'est pas valide.";
     }
     return $errors;
-
 }
 
 // Gestion de la soumission du formulaire
@@ -54,11 +58,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $errors = getErrors($seedItemId, $seasonId, $colorHarmony, $seasonHarmony);
 
     if (empty($errors)) {
-        $outfitGenerator = new OutfitGenerator($user->getId(), $colorHarmony, $seasonHarmony, $seedItem, $seasonWish);
-        $outfit = $outfitGenerator->generateOutfit();
-        $outfitRepo->insert($outfit);
-        header('Location: index.php');
-        exit;
+        $outfitGenerator = new OutfitGenerator(
+            $user->getId(),
+            $colorHarmony,
+            $seasonHarmony,
+            $seedItem,
+            $seasonId
+        );
+        try {
+            $outfit = $outfitGenerator->generateOutfit();
+            $outfitRepo->insert($outfit);
+            header('Location: index.php');
+            exit;
+        } catch (RuntimeException $e) {
+            $errors[] = $e->getMessage();
+        }
     }
 }
 ?>
@@ -79,8 +93,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <!-- Affichage dynamique des erreurs -->
         <?php if ($_SERVER["REQUEST_METHOD"] === "POST") { ?>
-            <?php ErrorHandler::displayErrors($errors)?>
-            <?php } ?>
+            <?php ErrorHandler::displayErrors($errors) ?>
+        <?php } ?>
 
         <form action="./generateOutfit.php" method="POST">
             <div class="seed-item">

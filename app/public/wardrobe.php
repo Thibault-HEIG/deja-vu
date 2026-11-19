@@ -5,7 +5,7 @@ require_once __DIR__ . '/../src/models/Item.php';
 
 $itemRepo = new ItemRepository();
 
-$currentUserId = 1; // ID de l'utilisateur actuel
+$currentUserId = 4; // ID de l'utilisateur actuel
 
 $clothesCount = $itemRepo->getItemsCountByUserId($currentUserId);
 

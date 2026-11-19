@@ -13,14 +13,16 @@
     -- 2. Utilisateurs                                                                                           
     -- (password = "password123" hashé via bcrypt)                                                               
     -- --------------------------------------------------------                                                  
-    INSERT INTO users (id, name, email, password, last_color_harmony_importance, last_season_harmony_importance, secret_token) 
+    INSERT INTO users (id, name, email, password, secret_token) 
   VALUES                                                                                                         
     (1, 'Alice', 'alice.martin@example.com', '$2y$12$e8Yk1m4gA27YnIuN2xZ/g.wZkQ52kC76F8M.                 
-  G/Jk2X7x9wL40mYqK', 0.75, 0.25, 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p4'),                                                                               
+  G/Jk2X7x9wL40mYqK', 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p4'),                                                                               
     (2, 'Bob',   'bob.dupont@example.com',   '$2y$12$e8Yk1m4gA27YnIuN2xZ/g.wZkQ52kC76F8M.                 
-  G/Jk2X7x9wL40mYqK', 0.15, 0.85, 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p5'),                                                                               
+  G/Jk2X7x9wL40mYqK', 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p5'),                                                                               
     (3, 'Chloé',  'chloe.viret@example.com',  '$2y$12$e8Yk1m4gA27YnIuN2xZ/g.wZkQ52kC76F8M.
-  G/Jk2X7x9wL40mYqK', 0.60, 0.40, 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6');
+  G/Jk2X7x9wL40mYqK', 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6');
+    (4, 'Loana',  'loana.babey@heig-vd.ch',  '$2y$12$e8Yk1m4gA27YnIuN2xZ/g.wZkQ52kC76F8M.
+  G/Jk2X7x9wL40mYqK', 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p7');
   
     -- --------------------------------------------------------
     -- 3. Vêtements (clothes)
@@ -59,8 +61,8 @@
     -- --------------------------------------------------------
     -- 4. Tenues générées (results)
     -- --------------------------------------------------------
-    INSERT INTO results (id, id_top, id_bottom, id_shoes, id_jacket, id_accessory, timestamp) VALUES             
-    (1, 1, 5,  9, 12,   15, '2026-04-12 10:15:00'),
-    (2, 3, 5, 10, 13,   16, '2026-01-20 08:45:00'),
-    (3, 2, 6,  9, NULL, 15, '2026-05-02 18:20:00'),
-    (4, 4, 7, 11, 14,   17, '2026-10-10 14:05:00');
+    INSERT INTO results (id, id_top, id_bottom, id_shoes, id_jacket, id_accessory, timestamp, season_harmony, seed_item_id, season_wish_id) VALUES             
+    (1, 1, 5,  9, 12,   15, '2026-04-12 10:15:00', 0.25, 1,    1),
+    (2, 3, 5, 10, 13,   16, '2026-01-20 08:45:00', 0.85, NULL, 4),
+    (3, 2, 6,  9, NULL, 15, '2026-05-02 18:20:00', 0.40, 2,    1),
+    (4, 4, 7, 11, 14,   17, '2026-10-10 14:05:00', 0.50, NULL, 3);

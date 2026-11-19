@@ -24,7 +24,8 @@ class OutfitGenerator {
     private float $colorHarmonyWeight;
     private float $seasonHarmonyWeight;
     private ?Item $seedItem;
-    private ?int $seasonWish;
+    private ?int $seasonWish; // temperature
+    private ?int $seasonWishId; // id
     private float $modelTemperature;
     private int $userId;
     private ColorModel $colorModel;
@@ -36,7 +37,7 @@ class OutfitGenerator {
         float $colorHarmonyWeight = 0.5,
         float $seasonHarmonyWeight = 0.5,
         ?Item $seedItem = null,
-        ?int $seasonWish = null,
+        ?int $seasonWishId = null,
         float $modelTemperature = ALGORITHM_TEMPERATURE
     ) {
         if ($colorHarmonyWeight < 0 || $colorHarmonyWeight > 1) {
@@ -51,17 +52,19 @@ class OutfitGenerator {
         if (abs(1 - ($colorHarmonyWeight + $seasonHarmonyWeight)) > 0.001) {
             throw new InvalidArgumentException("The sum of color and season harmony importance must be 1.");
         }
-        if ($seasonWish !== null && ($seasonWish < -20 || $seasonWish > 50)) {
-            throw new InvalidArgumentException("Season wish must be between -20 and 50.");
+        if ($seasonWishId !== null && ($seasonWishId < 0 || $seasonWishId > 4)) {
+            throw new InvalidArgumentException("Season is not valid.");
         }
 
+        $seasonRepo = new SeasonRepository();
         $this->userId = $userId;
         $this->colorHarmonyWeight = $colorHarmonyWeight;
         $this->seasonHarmonyWeight = $seasonHarmonyWeight;
         $this->seedItem = $seedItem;
-        $this->seasonWish = $seasonWish;
+        $this->seasonWishId = $seasonWishId;
+        $this->seasonWish = isset($this->seasonWish) ? $seasonRepo->getById($seasonWishId)->getAvgTemperature() : null;
         $this->modelTemperature = $modelTemperature;
-        $this->maxTemperatureDifference = new SeasonRepository()->getMaxTemperatureDifference();
+        $this->maxTemperatureDifference = $seasonRepo->getMaxTemperatureDifference();
         $this->colorModel = new ColorModel(__DIR__ . '/model.json');
     }
 
@@ -107,7 +110,7 @@ class OutfitGenerator {
                 } else {
                     $seasonScore = $this->computeSeasonScoreVsContext($item, $context);
                 }
-                
+
                 $candidates[] = [
                     'item'   => $item,
                     'color'  => $colorScore,
@@ -153,6 +156,9 @@ class OutfitGenerator {
             $slots['shoes'],
             $slots['accessory'],
             $slots['jacket'],
+            $this->seasonHarmonyWeight ?? null,
+            isset($this->seedItem) ? $this->seedItem->getId() : null,
+            $this->seasonWishId
         );
     }
 
@@ -167,6 +173,10 @@ class OutfitGenerator {
      * - temp 1   → power 0 → all scores become 1 → fully random.
      */
     private function pickByTemperature(array $candidates): ?Item {
+        if (empty($candidates)) {
+            return null;
+        }
+        
         // temp ≈ 0 → always the best (and avoids division by zero)
         if ($this->modelTemperature <= 0.01) {
             return $candidates[0]['item'];
