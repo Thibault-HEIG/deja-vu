@@ -120,8 +120,8 @@ class OutfitGenerator {
             if (in_array($category, ['accessory', 'jacket'])) {
                 $candidates[] = [
                     'item'   => null,
-                    'color'  => 0.5,
-                    'season' => 0.5,
+                    'color'  => NULL_CANDIDATE,
+                    'season' => NULL_CANDIDATE,
                     'rate'   => 3 / 5,
                 ];
             }

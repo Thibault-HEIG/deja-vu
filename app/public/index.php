@@ -43,11 +43,15 @@ $accessory = $latestOutfit->getAccessory();
             <div id="outfit-container">
                 <div class="items-top">
                     <img src="<?= htmlspecialchars($top->getImgUrl()) ?>" id="top" class="outfit-item">
-                    <img src="<?= htmlspecialchars($jacket->getImgUrl()) ?>" id="jacket" class="outfit-item">
+                    <?php if (isset($jacket)) { ?>
+                        <img src="<?= htmlspecialchars($jacket->getImgUrl()) ?>" id="jacket" class="outfit-item">
+                    <?php } ?>
                 </div>
                 <div class="items-bottom">
                     <img src="<?= htmlspecialchars($bottom->getImgUrl()) ?>" id="bottom" class="outfit-item">
-                    <img src="<?= htmlspecialchars($accessory->getImgUrl()) ?>" id="accessory" class="outfit-item">
+                    <?php if (isset($accessory)) { ?>
+                        <img src="<?= htmlspecialchars($accessory->getImgUrl()) ?>" id="accessory" class="outfit-item">
+                    <?php } ?>
                 </div>
                 <div class="items-shoes">
                     <img src="<?= htmlspecialchars($shoes->getImgUrl()) ?>" id="shoes" class="outfit-item">
