@@ -12,8 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    last_color_harmony_importance DOUBLE, -- [0,1]
-    last_season_harmony_importance DOUBLE, -- [0,1]
     secret_token VARCHAR(32) NOT NULL UNIQUE
 );
 
@@ -41,9 +39,15 @@ CREATE TABLE IF NOT EXISTS results (
     id_jacket INT,
     id_accessory INT,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    season_harmony DOUBLE NOT NULL, -- [0,1]
+    -- color_harmony = (1 - season_harmony)
+    seed_item_id INT,
+    season_wish_id INT,
     FOREIGN KEY (id_top) REFERENCES clothes (id),
     FOREIGN KEY (id_bottom) REFERENCES clothes (id),
     FOREIGN KEY (id_shoes) REFERENCES clothes (id),
     FOREIGN KEY (id_jacket) REFERENCES clothes (id),
-    FOREIGN KEY (id_accessory) REFERENCES clothes (id)
+    FOREIGN KEY (id_accessory) REFERENCES clothes (id),
+    FOREIGN KEY (seed_item_id) REFERENCES clothes (id),
+    FOREIGN KEY (season_wish_id) REFERENCES seasons (id)
 );

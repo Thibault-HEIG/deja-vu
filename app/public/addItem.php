@@ -7,7 +7,7 @@ require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/databaseSecurity.php';
 require_once __DIR__ . '/../src/ErrorHandler.php';
 
-$currentUserId = 1; // ID de l'utilisateur actuel (à remplacer par la session plus tard)
+$currentUserId = 4; // ID de l'utilisateur actuel (à remplacer par la session plus tard)
 
 $seasonRepo = new SeasonRepository();
 $itemRepo  = new ItemRepository();
