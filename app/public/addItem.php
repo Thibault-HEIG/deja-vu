@@ -6,9 +6,8 @@ require_once __DIR__ . '/../src/repositories/UserRepository.php';
 require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/databaseSecurity.php';
 require_once __DIR__ . '/../src/ErrorHandler.php';
-ErrorHandler::register(); // Hide raw errors in production
 
-$currentUserId = 1; // ID de l'utilisateur actuel (à remplacer par la session plus tard)
+$currentUserId = 4; // ID de l'utilisateur actuel (à remplacer par la session plus tard)
 
 $seasonRepo = new SeasonRepository();
 $itemRepo  = new ItemRepository();

@@ -8,7 +8,8 @@ services:
       context: .
       dockerfile_inline: |
         FROM php:8.5-apache
-        RUN docker-php-ext-install -j$(nproc) pdo_mysql
+        RUN docker-php-ext-install -j$(nproc) pdo_mysql \
+        && cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
     env_file:
       - .env
     ports:

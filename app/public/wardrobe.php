@@ -2,12 +2,10 @@
 require_once __DIR__ . '/../src/renderer.php';
 require_once __DIR__ . '/../src/repositories/ItemRepository.php';
 require_once __DIR__ . '/../src/models/Item.php';
-require_once __DIR__ . '/../src/ErrorHandler.php';
-ErrorHandler::register(); // Hide raw errors in production
 
 $itemRepo = new ItemRepository();
 
-$currentUserId = 1; // ID de l'utilisateur actuel
+$currentUserId = 4; // ID de l'utilisateur actuel
 
 $clothesCount = $itemRepo->getItemsCountByUserId($currentUserId);
 
@@ -51,7 +49,7 @@ $category = $_GET['category'] ?? '';
                     echo '<div class="wardrobe-item-container">';
                     echo '<img src="' . htmlspecialchars($item->getImgUrl()) . '" class="wardrobe-item" data-category="' . htmlspecialchars($item->getCategory()) . '">';
                     $rate = (int) $item->getRate();
-                    echo '<span class="stars" style="--rate:' . $rate . '" role="img"></span>';
+                    echo '<span class="stars" style="--rate:' . htmlspecialchars($rate) . '" role="img"></span>';
                     echo '</div>';
                 }
                 ?>

@@ -52,8 +52,8 @@ app/
     │
     ├── models/
     │   ├── Item.php                # Item entity: id, category, hue/saturation/brightness, season, rating, image URL
-    │   ├── Outfit.php              # Outfit entity: top + bottom + shoes + optional accessory and jacket
-    │   └── User.php                # User entity: id, name, color-harmony weight, season-harmony weight
+    │   ├── Outfit.php              # Outfit entity: top + bottom + shoes + optional accessory/jacket + generation metadata
+    │   └── User.php                # User entity: id, name, secret token
     │
     └── algorithm/
         ├── OutfitGenerator.php     # Core engine: scores and selects the best item combination given weights and a seed item

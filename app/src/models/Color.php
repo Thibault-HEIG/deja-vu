@@ -30,4 +30,26 @@ class Color {
     public function getBrightness(): int {
         return $this->brightness;
     }
+
+    /**
+     * Determines whether this color is neutral (grayscale/black/white/muted)
+     * based on the boundary curve from tests/rating-app.
+     *
+     * @return bool True if on or below the curve (neutral), false if colorful.
+     */
+    public function isNeutral(): bool {
+        $s = $this->saturation / 100.0;
+        $b = $this->brightness / 100.0;
+
+        $slope = 4.850;
+        $floor = 0.129;
+        $k = 4.0;
+
+        $x = $k * (1.0 - $slope * $s - $floor);
+        // Numerically stable softplus: max(x, 0) + log(1 + exp(-abs(x)))
+        $softplus = max($x, 0.0) + log1p(exp(-abs($x)));
+        $curveBrightness = $floor + $softplus / $k;
+
+        return $b <= $curveBrightness;
+    }
 }
