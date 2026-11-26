@@ -19,9 +19,8 @@ class UserRepository extends Repository implements IDelete {
         }
         return new User(
             $row['name'],
-            (float)$row['last_color_harmony_importance'],
-            (float)$row['last_season_harmony_importance'],
-            (int)$row['id']
+            (int)$row['id'],
+            $row['secret_token'] ?? ''
         );
     }
 
